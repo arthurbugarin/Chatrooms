@@ -3,7 +3,7 @@ import websockets
 import nest_asyncio
 nest_asyncio.apply()
 
-participantes = {}
+participantes = {} # formato Websocket: nome
 
 connected = set()
 
@@ -17,10 +17,10 @@ async def handler(websocket, path):
     connected.add(websocket)
     registrado = False
     try:
-        # Implement logic here.
         async for message in websocket:
             resposta = ''
             msg_dividida = message.split(' ', 2)
+            # Se mensagem puder ser um comando
             if len(message)>5:
                 if msg_dividida[0] == '/nome':
                     nome = msg_dividida[1]
@@ -36,17 +36,17 @@ async def handler(websocket, path):
                 if msg_dividida[0] == '/privado':
                     destinatario = msg_dividida[1]
                     if destinatario in participantes.values():
-                        #envia msg
+                        # Envia mensagem
                         for socket, name in participantes.items(): # encontra id correspondente
                             if name == destinatario:
                                 msg = 'Mensagem privada de ' + participantes[websocket] + ': ' + msg_dividida[2]
                                 await socket.send(msg)                        
                     else:
                         await websocket.send('Esse participante não está na conversa!')
-                    
+            # Se mensagem não for um comando                    
             if registrado and "/nome" not in message and "/privado" not in message:
                 resposta = participantes[websocket] + ': ' + message
-                await broadcast(websocket, resposta)                
+                await broadcast(websocket, resposta)
     finally:
         # Unregister.
         connected.remove(websocket)

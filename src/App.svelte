@@ -1,9 +1,9 @@
 <script>
-	let mensagem1 = "mensagem";
-	let mensagem2 = "mensagem";
-	let mensagem3 = "mensagem";
-	let mensagem4 = "mensagem";
-	let mensagem5 = "mensagem";
+	let mensagem1 = "";
+	let mensagem2 = "";
+	let mensagem3 = "";
+	let mensagem4 = "";
+	let mensagem5 = "";
 
 	let msg = "";
 	const socket = new WebSocket("ws://127.0.0.1:1487");
@@ -44,7 +44,7 @@
 	// Connection opened
 	socket.addEventListener('open', function (event) {
 		// socket.send('Hello Server!');
-		mensagem5 = "Servidor: Olá! Seja bem vindo ao chat. Insira seu nome digitando /nome [seu nome] para entrar na conversa";
+		//mensagem5 = "Servidor: Olá! Seja bem vindo ao chat. Insira seu nome digitando /nome [seu nome] para entrar na conversa";
 	});
 
 </script>

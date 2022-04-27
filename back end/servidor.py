@@ -1,10 +1,8 @@
 import asyncio
 import websockets
-import nest_asyncio
-nest_asyncio.apply()
 
 participantes = {} # formato Websocket: nome
-
+PORT = 1487
 connected = set()
 
 async def broadcast(websocket, message):
@@ -52,9 +50,12 @@ async def handler(websocket, path):
         connected.remove(websocket)
         del participantes[websocket]
         
-        
-        
-start_server = websockets.serve(handler, '127.0.0.1', 1487)
 
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+async def serve():                                                                                           
+    server = await websockets.serve(handler, '127.0.0.1', PORT)
+    print("Server listening on port", PORT)
+    await server.wait_closed()
+
+
+print("Starting server...")
+asyncio.run(serve())

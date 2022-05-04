@@ -18,11 +18,8 @@ chat_room = chatroom.ChatRoom()
 async def connection_handler(web_socket, path):
     # Register.
     connected.add(web_socket)
-    await web_socket.send('Servidor: Olá! Seja bem vindo ao chat. Insira seu nome digitando /nome [seu nome] para entrar na conversa')
-    # registrado = False
-    # TODO: handle insertion in chatroom and member creation
     member = MEMBER.Member(web_socket)
-    # chat_room.addMember(member)
+    await member.send_system_message('Olá! Seja bem vindo ao chat. Insira seu nome digitando /nome [seu nome] para entrar na conversa')
     try:
         async for incoming_message in web_socket:
             msg = message.Message(incoming_message, chat_room, member)
@@ -32,7 +29,7 @@ async def connection_handler(web_socket, path):
         connected.remove(web_socket)
         chat_room.delete_member(member)
 
-
+# FIXME: se a pessoa define o próprio nome como Servidor, o servidor não vai saber diferenciar o nome dele do nome do servidor, precisa determinar que alguns nomes não são permitidos
 async def serve():
     server = await websockets.serve(connection_handler, '127.0.0.1', PORT)
     print("Server listening on port", PORT)

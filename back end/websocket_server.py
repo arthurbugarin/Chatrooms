@@ -6,8 +6,10 @@ import chatroom
 import message
 import member as MEMBER
 import message_handler
+import socket
 
 PORT = 1487
+WEBSOCKET_URL = socket.gethostbyname(socket.gethostname())
 
 # TODO: check if this set is really necessary
 connected = set()
@@ -27,14 +29,16 @@ async def connection_handler(web_socket, path):
     finally:
         # Unregister.
         connected.remove(web_socket)
-        chat_room.delete_member(member)
+        if chat_room.member_in_room(member.name):
+            chat_room.delete_member(member)
+            await chat_room.broadcast_system(member.name + ' saiu da sala!')
 
 # FIXME: se a pessoa define o próprio nome como Servidor, o servidor não vai saber diferenciar o nome dele do nome do servidor, precisa determinar que alguns nomes não são permitidos
 async def serve():
-    server = await websockets.serve(connection_handler, '127.0.0.1', PORT)
-    print("Server listening on port", PORT)
+    server = await websockets.serve(connection_handler, WEBSOCKET_URL, PORT)
+    print("Server listening on", WEBSOCKET_URL, PORT)
     await server.wait_closed()
 
 
-print("Starting server...")
-asyncio.run(serve())
+def run():
+    asyncio.get_event_loop().create_task(serve())

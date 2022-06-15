@@ -1,16 +1,15 @@
-import websockets
 from dataclasses import dataclass
+
+from flask_socketio import emit
 
 
 @dataclass
 class Member():
-    websocket: websockets.WebSocketServerProtocol
+    socket_id: str
     name: str = ''
 
+    def send_message(self, message: str):
+        emit("message", message, to=self.socket_id)
 
-    async def send_message(self, message: str):
-        await self.websocket.send(message)
-
-
-    async def send_system_message(self, message: str):
-        await self.websocket.send('Servidor: ' + message)
+    def send_system_message(self, message: str):
+        emit("server message", message, to=self.socket_id)

@@ -41,4 +41,6 @@ async def serve():
 
 
 def run():
-    asyncio.get_event_loop().create_task(serve())
+    # loop = asyncio.get_event_loop()
+    # loop.create_task(serve())
+    asyncio.run(serve())

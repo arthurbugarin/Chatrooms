@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import Any
-import member
+from member import Member
 
 @dataclass
 class Message():
     text: str
     chat_room: Any
-    sender: member.Member
+    sender: Member

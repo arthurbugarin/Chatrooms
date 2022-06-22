@@ -1,5 +1,5 @@
-import member
-import message
+from member import Member
+from message import Message
 from flask_socketio import emit
 
 
@@ -10,7 +10,7 @@ class ChatRoom():
     def __init__(self):
         return
 
-    def add_member(self, member: member.Member):
+    def add_member(self, member: Member):
         if not self.member_in_room(member.name):
             self.members[member.name] = member.socket_id
             member.send_system_message('Seja bem vindo à conversa, ' + member.name +
@@ -24,13 +24,13 @@ class ChatRoom():
         return name in self.members
 
     def get_member(self, name: str):
-        return member.Member(name, self.members[name])
+        return Member(name, self.members[name])
 
     def delete_member(self, socket_id: str):
         del self.members[list(self.members.keys())[list(
             self.members.values()).index(socket_id)]]
 
-    def broadcast(self, message: message.Message):
+    def broadcast(self, message: Message):
         emit("message", message.text, broadcast=True, include_self=False)
 
     def broadcast_system(self, text: str):

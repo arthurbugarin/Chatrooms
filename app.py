@@ -1,13 +1,13 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, send
 
-import chatroom
-import member
+from chatroom import ChatRoom
+from member import Member
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-chat_room = chatroom.ChatRoom()
+chat_room = ChatRoom()
 
 
 @app.route('/')
@@ -24,7 +24,7 @@ def handle_message(msg):
 @socketio.on('connect')
 def test_connect():
     print('Client connected')
-    new_member = member.Member(request.sid, "nomedetesteeeeeeeeee")
+    new_member = Member(request.sid, "nomedetesteeeeeeeeee")
     new_member.send_message('Bem vindo ao chat!')
     chat_room.add_member(new_member)
     chat_room.broadcast_system(new_member.name + ' entrou na sala!')

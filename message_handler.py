@@ -37,9 +37,9 @@ def handle_command(message: Message):
             names_string = "\n".join(message.chat_room.get_names())
             message.sender.send_system_message(names_string)
 
-        # send private message
+        # sends private message
         case '/privado':
-            receiver_name = params[1] # TODO: check if receiver_name exists before activating the command
+            receiver_name = params[1]
             if message.chat_room.member_in_room(receiver_name):
                 receiver_member = message.chat_room.get_member(receiver_name)
                 receiver_member.send_message('Mensagem privada de ' + message.sender.name + ': ' + params[2])

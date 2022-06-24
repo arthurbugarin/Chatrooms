@@ -3,12 +3,15 @@ from flask_socketio import SocketIO, emit, send
 
 from chatroom import ChatRoom
 from member import Member
+from message_handler import handle_message
+from message import Message
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 
 chat_room = ChatRoom()
 
+connections = {}
 
 @app.route('/')
 def index():
@@ -16,26 +19,28 @@ def index():
 
 
 @socketio.on("message")
-def handle_message(msg):
+def receive_message(msg):
     print(msg)
-    emit("message", "Server response: " + msg)
+    member = connections[request.sid]
+    message = Message(msg, chat_room, member)
+    handle_message(message)
 
 
 @socketio.on('connect')
-def test_connect():
+def connect():
     print('Client connected')
-    new_member = Member(request.sid, "nomedetesteeeeeeeeee")
+    new_member = Member(request.sid)
+    connections[request.sid] = new_member
     new_member.send_message('Bem vindo ao chat!')
-    chat_room.add_member(new_member)
-    chat_room.broadcast_system(new_member.name + ' entrou na sala!')
     emit("server message",
          "Bem vindo ao chat! Digite /nome [seu nome] para definir seu nome e entrar na sala")
 
 
 @socketio.on('disconnect')
-def test_disconnect():
+def disconnect():
     print('Client disconnected')
     chat_room.delete_member(request.sid)
+    del connections[request.sid]
 
 
 if __name__ == '__main__':

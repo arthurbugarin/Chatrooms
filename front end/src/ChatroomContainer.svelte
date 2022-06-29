@@ -1,34 +1,10 @@
 <script>
+    import MessagesContainer from "./MessagesContainer.svelte";
     import { io } from "socket.io-client";
 
-    let mensagem1 = "mensagem";
-    let mensagem2 = "mensagem";
-    let mensagem3 = "mensagem";
-    let mensagem4 = "mensagem";
-    let mensagem5 = "mensagem";
-
-    let msg = "";
     const socketio = io();
 
-    function passarMsgs() {
-        mensagem1 = mensagem2;
-        mensagem2 = mensagem3;
-        mensagem3 = mensagem4;
-        mensagem4 = mensagem5;
-    }
-
-    socketio.on("message", (msg) => {
-        passarMsgs();
-        mensagem5 = msg;
-        console.log('Message from server: ', msg);
-    });
-
-
-    socketio.on("server message", (msg) => {
-        passarMsgs();
-        mensagem5 = msg;
-        console.log('Server message from server: ', msg);
-    });
+    let msg = "";
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -38,8 +14,7 @@
 
     function handleClick() {
         socketio.emit("message", msg);
-        passarMsgs();
-        mensagem5 = 'Enviado: '.concat(msg);
+        console.log('Message sent: ' + msg);
     }
 
     var input = document.getElementById("entraMsg");
@@ -56,17 +31,20 @@
     }
 </script>
 
-<main>
-    <p>container</p>
-    <p>{mensagem1}</p>
-	<p>{mensagem2}</p>
-	<p>{mensagem3}</p>
-	<p>{mensagem4}</p>
-	<p>{mensagem5}</p>
 
-	<input id="entraMsg" bind:value={msg}>
+<div class="messages-container">
+    <MessagesContainer socketio={socketio} />
+</div>
 
-	<button id="btnMsg" on:click={handleClick}>
-		Enviar
-	</button>
-</main>
+<input id="entraMsg" bind:value={msg}>
+
+<button id="btnMsg" on:click={handleClick}>
+    Enviar
+</button>
+
+<style>
+    .messages-container {
+        overflow-y: scroll;
+        height: 300px;
+    }
+</style>

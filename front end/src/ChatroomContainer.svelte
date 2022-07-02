@@ -33,18 +33,29 @@
 
 
 <div class="messages-container">
-    <MessagesContainer socketio={socketio} />
+    <div> <!-- this div is necessary to keep the scroll at the bottom without reversing the markup -->
+        <MessagesContainer socketio={socketio} />
+    </div>
+</div>
+<div class="message-input-container">
+    <input id="entraMsg" bind:value={msg}>
+    <button id="btnMsg" on:click={handleClick}>
+        Enviar
+    </button>
 </div>
 
-<input id="entraMsg" bind:value={msg}>
-
-<button id="btnMsg" on:click={handleClick}>
-    Enviar
-</button>
 
 <style>
     .messages-container {
         overflow-y: scroll;
         height: 300px;
+        border-bottom: 2px groove gray;
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    .message-input-container {
+        padding-top: 20px;
+        padding-bottom: 20px;
     }
 </style>
